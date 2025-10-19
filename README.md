@@ -14,3 +14,4 @@ The goal of this project is to create a functional program that lets users uploa
 ## Tech Stack
 - Python 3.11
 - opencv
+- tkinter
