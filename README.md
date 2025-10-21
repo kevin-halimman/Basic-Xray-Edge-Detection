@@ -2,7 +2,6 @@
 
 ## Table of Contents
 - [Overview](#overview)
-- [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Usage](#usage)
 - [Results](#results)
@@ -15,3 +14,11 @@ The goal of this project is to create a functional program that lets users uploa
 - Python 3.11
 - opencv
 - tkinter
+
+## Usage
+Simply upload an image file to see a side-by-side comparison of the original and processed images. You can also use the two sliders to change the minimum and maximum threshold values for the edge-detection algorithm. It is important to note that the same parameters will not always work the best for different images. When you are satisfied with your processed image, you can save the file onto your machine. 
+
+## Results
+
+
+## Structure
