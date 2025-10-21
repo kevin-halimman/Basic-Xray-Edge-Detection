@@ -19,11 +19,19 @@ label_processed = ttk.Label(imageframe, text="Processed Image")
 label_original.grid(row=0, column=0, padx=10, pady=10)
 label_processed.grid(row=0, column=1, padx=10, pady=10)
 
+def scale_to_fit(image, max_size):
+    if image.width > max_size[0] or image.height > max_size[1]:
+        ratio = min((max_size[0] - 30) / image.width, (max_size[1] - 30) / image.height)
+        new_size = (int(image.width * ratio), int(image.height * ratio))
+    else:
+        new_size = (image.width, image.height)
+    return image.resize(new_size, Image.LANCZOS)
+    
 def upload_image():
     file_path = filedialog.askopenfilename()
     if file_path:
         image = Image.open(file_path)
-        image = image.resize((400, 400))
+        image = scale_to_fit(image, (imageframe.winfo_width()//2, imageframe.winfo_height()))
         photo = ImageTk.PhotoImage(image)
         label_original.configure(image=photo, text = "Original Image", compound = 'bottom')
         label_original.image = photo
@@ -32,7 +40,7 @@ def upload_image():
         blur = cv2.GaussianBlur(image_cv, (5, 5), 0)
         edges = cv2.Canny(blur, 30, 150)
         image2 = Image.fromarray(edges)
-        image2 = image2.resize((400, 400))
+        image2 = scale_to_fit(image2, (imageframe.winfo_width()//2, imageframe.winfo_height()))
         photo2 = ImageTk.PhotoImage(image2)
         label_processed.configure(image=photo2, text = "Processed Image", compound = 'bottom')
         label_processed.image = photo2
