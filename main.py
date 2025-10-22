@@ -12,28 +12,6 @@ original_image = None
 processed_image = None
 current_image_path = None
 
-imageframe = ttk.Frame(root)
-imageframe.pack(expand=True, fill='both')
-
-imageframe.columnconfigure(0, weight=1)
-imageframe.columnconfigure(1, weight=1)
-
-label_original = ttk.Label(imageframe, text="Original Image")
-label_processed = ttk.Label(imageframe, text="Processed Image")
-label_original.grid(row=0, column=0, padx=10, pady=10)
-label_processed.grid(row=0, column=1, padx=10, pady=10)
-
-sliderlabel1 = ttk.Label(root, text="Canny Threshold 1")
-sliderlabel1.pack(padx=10, pady=5)
-slider1 = ttk.Scale(root, from_=0, to=300, orient='horizontal', length=300)
-slider1.set(30)
-slider1.pack(padx=10, pady=20)
-slider2 = ttk.Scale(root, from_=0, to=300, orient='horizontal', length=300)
-slider2.set(150)
-sliderlabel2 = ttk.Label(root, text="Canny Threshold 2")
-sliderlabel2.pack(padx=10, pady=5)
-slider2.pack(padx=10, pady=5)
-
 def update_display():
     global original_image, processed_image
     frame_width = imageframe.winfo_width() // 2
@@ -50,6 +28,17 @@ def update_display():
         photo2 = ImageTk.PhotoImage(img2)
         label_processed.configure(image=photo2, text = "Processed Image", compound = 'bottom')
         label_processed.image = photo2
+
+def update_image_processing(*args):
+    global original_image, processed_image, current_image_path
+    if current_image_path:
+        image_cv = cv2.imread(current_image_path, cv2.IMREAD_GRAYSCALE)
+
+        blur = cv2.GaussianBlur(image_cv, (5, 5), 0)
+        edges = cv2.Canny(blur, slider1.get(), slider2.get())
+        image2 = Image.fromarray(edges)
+        processed_image = image2.copy()
+        update_display()
 
 def window_resize(event):
     if current_image_path:
@@ -86,6 +75,28 @@ def upload_image():
         label_processed.image = photo2
 
         update_display()
+
+imageframe = ttk.Frame(root)
+imageframe.pack(expand=True, fill='both')
+
+imageframe.columnconfigure(0, weight=1)
+imageframe.columnconfigure(1, weight=1)
+
+label_original = ttk.Label(imageframe, text="Original Image")
+label_processed = ttk.Label(imageframe, text="Processed Image")
+label_original.grid(row=0, column=0, padx=10, pady=10)
+label_processed.grid(row=0, column=1, padx=10, pady=10)
+
+sliderlabel1 = ttk.Label(root, text="Canny Threshold 1")
+sliderlabel1.pack(padx=10, pady=5)
+slider1 = ttk.Scale(root, from_=0, to=300, orient='horizontal', length=300, command=update_image_processing)
+slider1.set(30)
+slider1.pack(padx=10, pady=20)
+slider2 = ttk.Scale(root, from_=0, to=300, orient='horizontal', length=300, command=update_image_processing)
+slider2.set(150)
+sliderlabel2 = ttk.Label(root, text="Canny Threshold 2")
+sliderlabel2.pack(padx=10, pady=5)
+slider2.pack(padx=10, pady=5)
 
 ttk.Button(root, text = "Upload Image", command = upload_image).pack()
 
